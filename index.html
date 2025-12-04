@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klebo - Team Volkswagen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Importing fonts to match VW Head/Text feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Global Setup --- */
+        :root {
+            --easing-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+            --easing-out: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Typography Mappings */
+        .vw-head { font-family: 'Archivo', sans-serif; letter-spacing: -0.02em; } 
+        .vw-text { font-family: 'Inter', sans-serif; letter-spacing: -0.01em; }
+
+        /* --- Scaling Engine --- */
+        .slide-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            background: #000;
+            position: relative;
+            /* Ensure smooth compositing */
+            will-change: transform; 
+        }
+
+        .scalable-frame {
+            position: relative;
+            transform-origin: top center;
+            width: 1920px; 
+            flex-shrink: 0; 
+            backface-visibility: hidden;
+        }
+
+        /* --- High-End Animation Utilities --- */
+        /* Base state for animated elements */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(60px) scale(0.96);
+            filter: blur(12px);
+            transition: 
+                opacity 1.4s var(--easing-smooth),
+                transform 1.4s var(--easing-smooth),
+                filter 1.2s var(--easing-smooth);
+            will-change: opacity, transform, filter;
+        }
+        
+        /* Active state */
+        .reveal-element.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+
+        /* Text-specific reveal (Slide-up mask effect feel) */
+        .reveal-text {
+            opacity: 0;
+            transform: translateY(100%);
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+            transition: 
+                opacity 1.2s var(--easing-smooth),
+                transform 1.2s var(--easing-smooth),
+                clip-path 1.2s var(--easing-smooth);
+        }
+
+        .reveal-text.active {
+            opacity: 1;
+            transform: translateY(0);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        }
+
+        /* Delay utilities for staggered animations */
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
+        .delay-400 { transition-delay: 0.4s; }
+        .delay-500 { transition-delay: 0.5s; }
+        .delay-600 { transition-delay: 0.6s; }
+
+        /* --- FIGMA CSS TRANSPLANT --- */
+
+        /* SLIDE 1: TITLE */
+        .slide-1 { height: 1080px; background: #000000; }
+        .slide-1 .bg-graphic {
+            position: absolute; width: 1423px; height: 1678px; left: 704px; top: 15px;
+            background: url('assets/0000.png0085 1.png');
+            background-size: cover; opacity: 0.4;
+            /* Subtle pulse animation for background */
+            animation: pulse-slow 10s infinite alternate ease-in-out;
+        }
+        @keyframes pulse-slow {
+            from { transform: scale(1); opacity: 0.4; }
+            to { transform: scale(1.02); opacity: 0.5; }
+        }
+
+        .slide-1 .team-vw {
+            position: absolute; width: 1007px; height: 422px; left: 122px; top: 232px;
+            font-size: 128px; line-height: 100%; color: #8E8E8E; font-weight: 700;
+        }
+        .slide-1 .prod-design {
+            position: absolute; width: 498px; height: 112px; left: 122px; top: 151px;
+            font-size: 32px; line-height: 109.9%; color: #9C9797; font-weight: 400;
+        }
+        .slide-1 .elias {
+            position: absolute; width: 276px; height: 112px; left: 1572px; top: 900px;
+            font-size: 32px; line-height: 109.9%; color: #969696; text-align: right; font-weight: 700;
+        }
+        .slide-1 .dev {
+            position: absolute; width: 276px; height: 112px; left: 134px; top: 900px;
+            font-size: 32px; line-height: 109.9%; color: #FFFFFF; font-weight: 700;
+        }
+        .slide-1 .logo {
+            position: absolute; width: 166px; height: 94px; left: 1682px; top: 113px;
+            background: url('assets/image 6.png');
+            background-size: contain; background-repeat: no-repeat;
+        }
+
+        /* SLIDE 2: INTRO (Long Scroll) */
+        .slide-2 { height: 4186px; background: #000000; }
+        .slide-2 .car-silhouette {
+            position: absolute; width: 1920px; height: 1080px; left: 0px; top: 0px;
+            background: url('assets/image 12.png');
+            background-size: cover;
+        }
+        .slide-2 .introducing {
+            position: absolute; width: 604px; height: 194px; left: 658px; top: 972px;
+            font-size: 48px; line-height: 59px; text-align: center; color: #9C9797; font-weight: 400;
+        }
+        .slide-2 .klebo-hero {
+            position: absolute; width: 1092px; height: 998px; left: 414px; top: 1100px;
+            background: url('assets/image 12.png'); 
+            background-size: contain; background-repeat: no-repeat; opacity: 0; 
+        }
+        .slide-2 .klebo-title {
+            position: absolute; width: 604px; height: 194px; left: 658px; top: 2387px;
+            font-size: 48px; line-height: 59px; text-align: center; color: #9C9797; font-weight: 700;
+        }
+        .slide-2 .next-gear {
+            position: absolute; width: 604px; height: 194px; left: 658px; top: 2453px;
+            font-size: 24px; line-height: 29px; text-align: center; color: #5D5D5D; font-weight: 400;
+        }
+        .slide-2 .digital-renders-title {
+            position: absolute; width: 604px; height: 194px; left: 89px; top: 2949px;
+            font-size: 48px; line-height: 59px; text-align: center; color: #9C9797; font-weight: 700;
+        }
+        .slide-2 .render-img-1 {
+            position: absolute; width: 1092px; height: 998px; left: 693px; top: 2957px;
+            background: url('assets/image 13.png');
+            background-size: cover;
+        }
+        .slide-2 .render-img-2 {
+            position: absolute; width: 409px; height: 526px; left: 317px; top: 3193px;
+            background: url('assets/image 33.png');
+            background-size: cover;
+        }
+        .slide-2 .overlay-img-11 {
+             position: absolute; width: 1920px; height: 1234px; left: 0px; top: 1107px;
+             background: url('assets/image 11.png');
+             background-blend-mode: screen; pointer-events: none;
+        }
+
+        /* SLIDE 5: WORKFLOW */
+        .slide-5 { height: 3807px; background: #000000; }
+        .slide-5 .hero-image {
+            position: absolute; width: 1571px; height: 1923px; left: 0px; top: 0px;
+            background: url('assets/Frame 15.png');
+            background-size: cover;
+        }
+        .slide-5 .workflow-title {
+            position: absolute; width: 428px; height: 78px; left: 1073px; top: 2896px;
+            font-size: 32px; line-height: 39px; color: #B6C8DD; font-weight: 700;
+        }
+        .slide-5 .workflow-text {
+            position: absolute; width: 551px; height: 145px; left: 1073px; top: 3015px;
+            font-size: 24px; line-height: 140%; color: #B6C8DD; font-weight: 400; opacity: 0.8;
+        }
+        .slide-5 .tape-img {
+            position: absolute; width: 946px; height: 1562px; left: 165px; top: 2019px;
+            background: url('assets/image 31.png');
+            background-size: cover; border-radius: 30px;
+        }
+        .slide-5 .tape-title {
+            position: absolute; width: 1419px; height: 39px; left: 1211px; top: 2841px;
+            font-size: 32px; line-height: 39px; color: #B6C8DD; font-weight: 700;
+        }
+        .slide-5 .tape-text {
+            position: absolute; width: 481px; height: 87px; left: 1210px; top: 2901px;
+            font-size: 24px; line-height: 140%; color: #B6C8DD; font-weight: 400; opacity: 0.8;
+        }
+        .slide-5 .gradient {
+            position: absolute; width: 1923px; height: 1353px; left: 567px; top: 0px;
+            background: linear-gradient(180.1deg, rgba(0, 0, 0, 0) 8.36%, #000000 99.91%);
+            transform: rotate(-90deg);
+        }
+
+        /* SLIDE 3: MECHANISMS */
+        .slide-3 { height: 4186px; background: #000000; }
+        .slide-3 .exploded-img {
+            position: absolute; width: 1560px; height: 877px; left: 128px; top: 251px;
+            background: url('assets/0000.png0073 1.png');
+            background-size: contain; background-repeat: no-repeat;
+        }
+        .slide-3 .exploded-title {
+            position: absolute; width: 604px; height: 194px; left: 173px; top: 295px;
+            font-size: 36px; line-height: 44px; text-align: center; color: #9C9797; font-weight: 700;
+        }
+        .slide-3 .clip-img {
+            position: absolute; width: 1619px; height: 1118px; left: 154px; top: 1459px;
+            background: url('assets/Frame 16.png');
+            background-size: contain; background-repeat: no-repeat;
+        }
+        .slide-3 .clip-title {
+            position: absolute; width: 1419px; height: 39px; left: 255px; top: 1915px;
+            font-size: 32px; line-height: 39px; color: #B6C8DD; font-weight: 700;
+        }
+        .slide-3 .clip-text {
+            position: absolute; width: 512px; height: 116px; left: 254px; top: 1975px;
+            font-size: 24px; line-height: 140%; color: #B6C8DD; font-weight: 400; opacity: 0.8;
+        }
+        .slide-3 .safety-img-1 {
+            position: absolute; width: 1245px; height: 951px; left: 337px; top: 2844px;
+            background: url('assets/Frame 17.png');
+            background-size: contain; background-repeat: no-repeat;
+        }
+        .slide-3 .safety-title {
+            position: absolute; width: 1419px; height: 39px; left: 969px; top: 3246px;
+            font-size: 32px; line-height: 39px; color: #B6C8DD; font-weight: 700;
+        }
+        .slide-3 .safety-text {
+            position: absolute; width: 512px; height: 145px; left: 968px; top: 3306px;
+            font-size: 24px; line-height: 140%; color: #B6C8DD; font-weight: 400; opacity: 0.8;
+        }
+
+        /* SLIDE 4: STORAGE */
+        .slide-4 { height: 4026px; background: #000000; }
+        .slide-4 .storage-title {
+            position: absolute; width: 305px; height: 39px; left: 984px; top: 1002px;
+            font-size: 32px; line-height: 39px; color: #B6C8DD; font-weight: 700;
+        }
+        .slide-4 .storage-text {
+            position: absolute; width: 565px; height: 58px; left: 984px; top: 1073px;
+            font-size: 24px; line-height: 140%; color: #B6C8DD; font-weight: 400; opacity: 0.8;
+        }
+        .slide-4 .pkg-main-img {
+            position: absolute; width: 1587px; height: 1128px; left: 180px; top: 2549px;
+            background: url('assets/image 34.png');
+            background-size: cover;
+        }
+        .slide-4 .pkg-box-img {
+            position: absolute; width: 824px; height: 526px; left: 855px; top: 1840px; 
+            background: url('assets/image 32.png');
+            background-size: cover; border-radius: 30px;
+        }
+        .slide-4 .pkg-side-img {
+            position: absolute; width: 587px; height: 892px; left: 170px; top: 2156px; 
+            background: url('assets/image 30.png');
+            background-size: cover; border-radius: 30px;
+        }
+        .slide-4 .pkg-design-bg {
+             position: absolute; width: 1491px; height: 737px; left: 338px; top: 1659px;
+             background: url('assets/Frame 14.png');
+             background-size: cover; opacity: 0.8; z-index: -1;
+        }
+        .slide-4 .pkg-title {
+            position: absolute; width: 1419px; height: 39px; left: 410px; top: 2007px;
+            font-size: 32px; line-height: 39px; color: #B6C8DD; font-weight: 700;
+        }
+        .slide-4 .pkg-text {
+            position: absolute; width: 565px; height: 87px; left: 409px; top: 2067px;
+            font-size: 24px; line-height: 140%; color: #B6C8DD; font-weight: 400; opacity: 0.8;
+        }
+
+        /* SLIDE 7: PROTOTYPES */
+        .slide-7 { height: 1080px; background: #000000; }
+        .slide-7 .proto-title {
+            position: absolute; width: 604px; height: 194px; left: 113px; top: 176px;
+            font-size: 48px; line-height: 59px; color: #9C9797; font-weight: 700;
+        }
+        .slide-7 .proto-subtitle {
+            position: absolute; width: 604px; height: 194px; left: 113px; top: 241px;
+            font-size: 36px; line-height: 44px; color: #9C9797; font-weight: 400;
+        }
+        .slide-7 .img-proto-1 {
+            position: absolute; width: 428px; height: 571px; left: 111px; top: 359px;
+            background: url('assets/image 35.png');
+            background-size: cover;
+        }
+        .slide-7 .img-proto-2 {
+            position: absolute; width: 605px; height: 807px; left: 614px; top: 123px;
+            background: url('assets/image 36.png');
+            background-size: cover;
+        }
+        .slide-7 .img-proto-3 {
+            position: absolute; width: 706px; height: 438px; left: 1327px; top: 224px;
+            background: url('assets/image 37.png');
+            background-size: cover; transform: rotate(90deg);
+        }
+
+        /* SLIDE 6: THANK YOU */
+        .slide-6 { height: 1080px; background: #000000; }
+        .slide-6 .thank-you {
+            position: absolute; width: 604px; height: 194px; left: 658px; top: 416px;
+            font-size: 36px; line-height: 44px; text-align: center; color: #9C9797; font-weight: 700;
+        }
+        .slide-6 .bg-graphic {
+            position: absolute; width: 1920px; height: 1099px; left: 0px; top: 1px;
+            background: url('assets/image 29.png');
+            background-size: cover; opacity: 0.5;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Slide 1: Title (Auto Triggered) -->
+    <div class="slide-container">
+        <div class="scalable-frame slide-1">
+            <div class="bg-graphic reveal-element delay-100"></div>
+            <div class="prod-design vw-head reveal-element delay-300">Simple Product Design</div>
+            <div class="team-vw vw-head reveal-element delay-500">Team Volkswagen</div>
+            <div class="dev vw-head reveal-element delay-600">Development</div>
+            <div class="elias vw-head reveal-element delay-600">Elias Abraham</div>
+            <div class="logo reveal-element delay-200"></div>
+        </div>
+    </div>
+
+    <!-- Slide 2: Introduction -->
+    <div class="slide-container">
+        <div class="scalable-frame slide-2">
+            <div class="car-silhouette reveal-element"></div>
+            <div class="overlay-img-11 reveal-element delay-200"></div>
+            <div class="introducing vw-head reveal-element delay-300">Introducing</div>
+            
+            <div class="klebo-hero reveal-element delay-400"></div>
+            <div class="klebo-title vw-head reveal-element delay-500">Klebo</div>
+            <div class="next-gear vw-head reveal-element delay-600">Next Gear, at your desk.</div>
+            
+            <div class="digital-renders-title vw-head reveal-element">Digital Renders</div>
+            <div class="render-img-1 reveal-element delay-100"></div>
+            <div class="render-img-2 reveal-element delay-200"></div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Workflow Integration -->
+    <div class="slide-container">
+        <div class="scalable-frame slide-5">
+            <div class="hero-image reveal-element"></div>
+            <div class="gradient"></div>
+            
+            <div class="workflow-title vw-head reveal-element delay-100">Workflow Integration</div>
+            <div class="workflow-text vw-text reveal-element delay-200">
+                Klebo seamlessly blends into the table by clamping to the edge to liberate valuable workspace, functioning as a stable, integrated extension of the desk that allows for fluid, one-handed access without interrupting your workflow.
+            </div>
+
+            <div class="tape-img reveal-element delay-200"></div>
+            <div class="tape-title vw-head reveal-element delay-300">Easy Tape Removal</div>
+            <div class="tape-text vw-text reveal-element delay-400">
+                Klebo simplifies refills with a quick-release spool hub that slides out smoothly, allowing for effortless tape changes in seconds.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Mechanism & Safety -->
+    <div class="slide-container">
+        <div class="scalable-frame slide-3">
+            <div class="exploded-img reveal-element"></div>
+            <div class="exploded-title vw-head reveal-element delay-100">Exploded View</div>
+
+            <div class="clip-img reveal-element"></div>
+            <div class="clip-title vw-head reveal-element delay-100">Clip-on Mechanism</div>
+            <div class="clip-text vw-text reveal-element delay-200">
+                Featuring an under-chassis clamping mechanism and rubber grips, Klebo anchors to the desk edge to ensure stability and seamless tape access during workflow.
+            </div>
+
+            <div class="safety-img-1 reveal-element"></div>
+            <div class="safety-img-2 reveal-element delay-100"></div>
+            <div class="safety-title vw-head reveal-element delay-100">Safety Mechanism</div>
+            <div class="safety-text vw-text reveal-element delay-200">
+                Klebo features a retractable blade mechanism that keeps the cutting edge shielded behind the ribbed TPE guard when idle, only exposing it under specific cutting tension to prevent accidental injury.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Storage & Packaging -->
+    <div class="slide-container">
+        <div class="scalable-frame slide-4">
+            <div class="pkg-design-bg reveal-element"></div>
+            <div class="storage-title vw-head reveal-element">Extra Storage</div>
+            <div class="storage-text vw-text reveal-element delay-100">
+                The lower chassis features a dedicated compartment to store spare tape rolls for quick access.
+            </div>
+
+            <div class="pkg-box-img reveal-element delay-200"></div>
+            <div class="pkg-side-img reveal-element delay-300"></div>
+            
+            <div class="pkg-title vw-head reveal-element delay-100">Packaging Design Concept</div>
+            <div class="pkg-text vw-text reveal-element delay-200">
+                The packaging conveys engineered simplicity and substantial quality through its clean lines, two-tone geometry, and prominent Volkswagen branding.
+            </div>
+            <div class="pkg-main-img reveal-element delay-400"></div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Prototypes -->
+    <div class="slide-container">
+        <div class="scalable-frame slide-7">
+            <div class="proto-title vw-head reveal-element">Prototype</div>
+            <div class="proto-subtitle vw-head reveal-element delay-100">Soft Model</div>
+            <div class="img-proto-1 reveal-element delay-200"></div>
+            <div class="img-proto-2 reveal-element delay-300"></div>
+            <div class="img-proto-3 reveal-element delay-400"></div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Thank You -->
+    <div class="slide-container">
+        <div class="scalable-frame slide-6">
+            <div class="bg-graphic reveal-element"></div>
+            <div class="thank-you vw-head reveal-element delay-300">Thank You</div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Scaling Logic ---
+        function handleResize() {
+            const frames = document.querySelectorAll('.scalable-frame');
+            const windowWidth = window.innerWidth;
+            const baseWidth = 1920;
+            
+            // Limit scale slightly on desktop to prevent looking 'too large' on ultra-wide
+            const scale = Math.min(1, windowWidth / baseWidth);
+            
+            frames.forEach(frame => {
+                frame.style.transform = `scale(${scale})`;
+                const originalHeight = parseInt(window.getComputedStyle(frame).height);
+                frame.parentElement.style.height = `${originalHeight * scale}px`;
+            });
+        }
+
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('load', handleResize);
+
+        // --- 2. Advanced Animation Logic ---
+        const observerOptions = {
+            root: null,
+            // Negative margin means elements must come further into view before triggering
+            rootMargin: '-50px', 
+            threshold: 0.15 
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal-element, .reveal-text').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Instant trigger for above-the-fold content on load
+        window.addEventListener('load', () => {
+            handleResize();
+            // Force activate first slide elements immediately
+            const firstSlideElements = document.querySelectorAll('.slide-1 .reveal-element');
+            firstSlideElements.forEach(el => el.classList.add('active'));
+        });
+    </script>
+</body>
+</html>
