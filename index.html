@@ -2,33 +2,70 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="description" content="Klebo - Team Volkswagen Product Design Showcase">
+    
+    <!-- Resource Hints for Performance -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    
     <link rel="icon" type="image/png" href="./assets/favicon.png">
     <title>Klebo - Team Volkswagen</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    
+    <!-- Optimized Font Loading with font-display -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap"></noscript>
+    
+    <!-- Inline Critical CSS to prevent FOUC -->
+    <style>
+      /* Critical CSS - Above the fold */
+      html { scroll-behavior: smooth; }
+      body {
+        background-color: #050505;
+        color: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      .slide-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        overflow: hidden;
+        background: #000;
+        position: relative;
+        contain: layout style paint;
+      }
+      .scalable-frame {
+        position: relative;
+        transform-origin: top center;
+        width: 100%;
+        max-width: 1920px;
+        flex-shrink: 0;
+      }
+    </style>
+    
+    <script src="https://cdn.tailwindcss.com" async></script>
 
     <style>
       /* --- Global Setup --- */
       :root {
         --easing-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+        --easing-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
       }
 
-      html {
-        scroll-behavior: smooth;
+      * {
+        transition: opacity 0.3s var(--easing-smooth), transform 0.3s var(--easing-smooth);
       }
 
       body {
-        background-color: #050505;
-        color: #ffffff;
-        font-family: "Inter", sans-serif;
-        overflow-x: hidden;
-        margin: 0;
-        padding: 0;
-        -webkit-font-smoothing: antialiased;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
       }
 
       /* Typography Mappings */
@@ -41,38 +78,67 @@
         letter-spacing: -0.01em;
       }
 
-      /* --- Scaling Engine --- */
+      /* --- Responsive Scaling Engine --- */
       .slide-container {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        overflow: hidden;
-        background: #000;
-        position: relative;
-        will-change: transform;
+        contain: layout style paint;
+        will-change: auto;
       }
 
       .scalable-frame {
-        position: relative;
-        transform-origin: top center;
-        width: 1920px;
-        flex-shrink: 0;
         backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        perspective: 1000px;
+        width: 100%;
+        max-width: 1920px;
+        margin: 0 auto;
       }
 
-      /* --- Animation Utilities --- */
+      /* Responsive breakpoints */
+      @media (max-width: 768px) {
+        .scalable-frame {
+          transform: none !important;
+        }
+      }
+
+      /* --- Lazy Loading for Background Images --- */
+      [data-bg] {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      .lazy-bg {
+        background-image: none !important;
+        transition: background-image 0.3s ease-in-out;
+      }
+
+      .lazy-bg.loaded {
+        animation: fadeInBg 0.6s ease-in-out;
+      }
+
+      @keyframes fadeInBg {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      /* --- Animation Utilities with Transitions --- */
       .reveal-element {
         opacity: 0;
         transform: translateY(60px) scale(0.96);
         filter: blur(12px);
         transition: opacity 1.4s var(--easing-smooth),
-          transform 1.4s var(--easing-smooth), filter 1.2s var(--easing-smooth);
+          transform 1.4s var(--easing-smooth), 
+          filter 1.2s var(--easing-smooth);
+        will-change: opacity, transform, filter;
       }
+      
       .reveal-element.active {
         opacity: 1;
         transform: translateY(0) scale(1);
         filter: blur(0);
+        will-change: auto;
       }
+      
       .delay-100 { transition-delay: 0.1s; }
       .delay-200 { transition-delay: 0.2s; }
       .delay-300 { transition-delay: 0.3s; }
@@ -80,354 +146,804 @@
       .delay-500 { transition-delay: 0.5s; }
       .delay-600 { transition-delay: 0.6s; }
 
-      /* --- SLIDE 1 --- */
-      .slide-1 { height: 1080px; background: #000000; }
-      .slide-1 .bg-graphic {
-        position: absolute; width: 1423px; height: 1678px; left: 704px; top: 15px;
-        background: url("assets/0000.png0085 1.png");
-        background-size: cover; opacity: 0.4;
-        animation: pulse-slow 10s infinite alternate ease-in-out;
+      /* Add smooth transitions to interactive elements */
+      a, button, .interactive {
+        transition: all 0.3s var(--easing-smooth);
       }
+
+      a:hover, button:hover {
+        transform: translateY(-2px);
+      }
+
+      /* --- SLIDE 1 --- */
+      .slide-1 { 
+        min-height: 100vh;
+        height: 1080px; 
+        background: #000000;
+        position: relative;
+      }
+      
+      .slide-1 .bg-graphic {
+        position: absolute; 
+        width: 74.11%; 
+        height: 155.37%; 
+        right: 0;
+        top: 15px;
+        background-size: cover; 
+        opacity: 0.4;
+        animation: pulse-slow 10s infinite alternate ease-in-out;
+        will-change: transform, opacity;
+      }
+      
       @keyframes pulse-slow {
         from { transform: scale(1); opacity: 0.4; }
         to { transform: scale(1.02); opacity: 0.5; }
       }
+      
       .slide-1 .team-vw {
-        position: absolute; width: 1007px; height: 422px; left: 122px; top: 232px;
-        font-size: 128px; line-height: 100%; color: #8e8e8e; font-weight: 700;
+        position: absolute; 
+        width: 52.4%; 
+        left: 6.35%; 
+        top: 21.5%;
+        font-size: clamp(3rem, 6.67vw, 128px); 
+        line-height: 100%; 
+        color: #8e8e8e; 
+        font-weight: 700;
       }
+      
       .slide-1 .prod-design {
-        position: absolute; width: 498px; height: 112px; left: 122px; top: 151px;
-        font-size: 32px; line-height: 109.9%; color: #9c9797; font-weight: 400;
+        position: absolute; 
+        width: 25.94%; 
+        left: 6.35%; 
+        top: 14%;
+        font-size: clamp(1.2rem, 1.67vw, 32px); 
+        line-height: 109.9%; 
+        color: #9c9797; 
+        font-weight: 400;
       }
+      
       .slide-1 .elias {
-        position: absolute; width: 276px; height: 112px; left: 1572px; top: 900px;
-        font-size: 32px; line-height: 109.9%; color: #969696; text-align: right; font-weight: 700;
+        position: absolute; 
+        width: 14.38%; 
+        right: 6.25%; 
+        top: 83.33%;
+        font-size: clamp(1.2rem, 1.67vw, 32px); 
+        line-height: 109.9%; 
+        color: #969696; 
+        text-align: right; 
+        font-weight: 700;
       }
+      
       .slide-1 .dev {
-        position: absolute; width: 276px; height: 112px; left: 134px; top: 900px;
-        font-size: 32px; line-height: 109.9%; color: #ffffff; font-weight: 700;
+        position: absolute; 
+        width: 14.38%; 
+        left: 6.98%; 
+        top: 83.33%;
+        font-size: clamp(1.2rem, 1.67vw, 32px); 
+        line-height: 109.9%; 
+        color: #ffffff; 
+        font-weight: 700;
       }
+      
       .slide-1 .logo {
-        position: absolute; width: 166px; height: 94px; left: 1682px; top: 113px;
-        background: url("assets/image 6.png");
-        background-size: contain; background-repeat: no-repeat;
+        position: absolute; 
+        width: 8.65%; 
+        height: 8.7%; 
+        right: 6.25%; 
+        top: 10.46%;
+        background-size: contain; 
+        background-repeat: no-repeat;
       }
 
       /* --- SLIDE 2 --- */
-      .slide-2 { height: 4282px; background: #000000; }
+      .slide-2 { 
+        min-height: 100vh;
+        height: 4282px; 
+        background: #000000;
+        position: relative;
+      }
+      
       .slide-2 .img-12 {
-        position: absolute; width: 1920px; height: 1080px; left: 0px; top: 0px;
-        background: url("assets/image 12.png"); background-size: cover;
+        position: absolute; 
+        width: 100%; 
+        height: 25.22%; 
+        left: 0; 
+        top: 0;
+        background-size: cover;
       }
+      
       .slide-2 .img-10 {
-        position: absolute; width: 1920px; height: 1080px; left: 0px; top: 36px;
+        position: absolute; 
+        width: 100%; 
+        height: 25.22%; 
+        left: 0; 
+        top: 0.84%;
       }
+      
       .slide-2 .introducing {
-        position: absolute; width: 604px; height: 194px; left: 658px; top: 972px;
-        font-size: 48px; line-height: 59px; text-align: center; color: #9c9797; font-weight: 400;
+        position: absolute; 
+        width: 31.46%; 
+        left: 34.27%; 
+        top: 22.7%;
+        font-size: clamp(1.5rem, 2.5vw, 48px); 
+        line-height: 1.23; 
+        text-align: center; 
+        color: #9c9797; 
+        font-weight: 400;
       }
+      
       .slide-2 .img-11 {
-        position: absolute; width: 1920px; height: 1234px; left: 0px; top: 1107px;
-        background: url("assets/image 11.png"); background-blend-mode: screen; background-size: cover;
+        position: absolute; 
+        width: 100%; 
+        height: 28.82%; 
+        left: 0; 
+        top: 25.85%;
+        background-blend-mode: screen; 
+        background-size: cover;
       }
+      
       .slide-2 .klebo-title {
-        position: absolute; width: 604px; height: 194px; left: 658px; top: 2387px;
-        font-size: 48px; line-height: 59px; text-align: center; color: #9c9797; font-weight: 700;
+        position: absolute; 
+        width: 31.46%; 
+        left: 34.27%; 
+        top: 55.74%;
+        font-size: clamp(1.5rem, 2.5vw, 48px); 
+        line-height: 1.23; 
+        text-align: center; 
+        color: #9c9797; 
+        font-weight: 700;
       }
+      
       .slide-2 .next-gear {
-        position: absolute; width: 604px; height: 194px; left: 658px; top: 2453px;
-        font-size: 24px; line-height: 29px; text-align: center; color: #5d5d5d; font-weight: 400;
+        position: absolute; 
+        width: 31.46%; 
+        left: 34.27%; 
+        top: 57.28%;
+        font-size: clamp(1rem, 1.25vw, 24px); 
+        line-height: 1.21; 
+        text-align: center; 
+        color: #5d5d5d; 
+        font-weight: 400;
       }
+      
       .slide-2 .digital-renders-title {
-        position: absolute; width: 604px; height: 194px; left: 121px; top: 2900px;
-        font-size: 48px; line-height: 59px; text-align: center; color: #9c9797; font-weight: 700;
+        position: absolute; 
+        width: 31.46%; 
+        left: 6.3%; 
+        top: 67.71%;
+        font-size: clamp(1.5rem, 2.5vw, 48px); 
+        line-height: 1.23; 
+        text-align: center; 
+        color: #9c9797; 
+        font-weight: 700;
       }
+      
       .slide-2 .img-13 {
-        position: absolute; width: 1261px; height: 1152px; left: 631px; top: 2997px;
-        background: url("assets/image 13.png"); background-size: cover;
+        position: absolute; 
+        width: 65.68%; 
+        height: 26.9%; 
+        left: 32.86%; 
+        top: 69.97%;
+        background-size: cover;
       }
+      
       .slide-2 .img-40 {
-        position: absolute; width: 578px; height: 451px; left: 206px; top: 3055px;
-        background: url('assets/image 40.png');
+        position: absolute; 
+        width: 30.1%; 
+        height: 10.53%; 
+        left: 10.73%; 
+        top: 71.32%;
       }
+      
       .slide-2 .img-33 {
-        position: absolute; width: 433px; height: 557px; left: 292px; top: 3511px;
-        background: url("assets/image 33.png"); background-size: cover;
+        position: absolute; 
+        width: 22.55%; 
+        height: 13%; 
+        left: 15.21%; 
+        top: 81.97%;
+        background-size: cover;
       }
 
       /* --- SLIDE 7: PROTOTYPES --- */
-      .slide-7 { height: 2353px; background: #000000; }
-      .slide-7 .img-10 {
-        position: absolute; width: 1920px; height: 1080px; left: 0px; top: 36px;
+      .slide-7 { 
+        min-height: 100vh;
+        height: 2353px; 
+        background: #000000;
+        position: relative;
       }
+      
+      .slide-7 .img-10 {
+        position: absolute; 
+        width: 100%; 
+        height: 45.9%; 
+        left: 0; 
+        top: 1.53%;
+      }
+      
       .slide-7 .bg-graphic-wide {
-        position: absolute; width: 3158px; height: 1776px; left: -146px; top: -78px;
+        position: absolute; 
+        width: 164.48%; 
+        height: 75.48%; 
+        left: -7.6%; 
+        top: -3.31%;
         background-size: cover;
       }
+      
       .slide-7 .proto-title {
-        position: absolute; width: 604px; height: 194px; left: 149px; top: 153px;
-        font-size: 48px; line-height: 59px; color: #9c9797; font-weight: 700;
+        position: absolute; 
+        width: 31.46%; 
+        left: 7.76%; 
+        top: 6.5%;
+        font-size: clamp(1.5rem, 2.5vw, 48px); 
+        line-height: 1.23; 
+        color: #9c9797; 
+        font-weight: 700;
       }
+      
       .slide-7 .proto-subtitle {
-        position: absolute; width: 604px; height: 194px; left: 149px; top: 218px;
-        font-size: 36px; line-height: 44px; color: #9c9797; font-weight: 400;
+        position: absolute; 
+        width: 31.46%; 
+        left: 7.76%; 
+        top: 9.27%;
+        font-size: clamp(1.2rem, 1.88vw, 36px); 
+        line-height: 1.22; 
+        color: #9c9797; 
+        font-weight: 400;
       }
+      
       .slide-7 .img-proto-1 {
-        position: absolute; width: 428px; height: 571px; left: 111px; top: 359px;
-        background: url("assets/image 35.png"); background-blend-mode: screen;
-        border-radius: 30px; background-size: cover;
+        position: absolute; 
+        width: 22.29%; 
+        height: 24.27%; 
+        left: 5.78%; 
+        top: 15.26%;
+        background-blend-mode: screen;
+        border-radius: 30px; 
+        background-size: cover;
       }
+      
       .slide-7 .img-proto-2 {
-        position: absolute; width: 605px; height: 807px; left: 690px; top: 123px;
-        background: url("assets/image 36.png"); background-blend-mode: screen;
-        border-radius: 30px; background-size: cover;
+        position: absolute; 
+        width: 31.51%; 
+        height: 34.3%; 
+        left: 35.94%; 
+        top: 5.23%;
+        background-blend-mode: screen;
+        border-radius: 30px; 
+        background-size: cover;
       }
+      
       .slide-7 .img-proto-3 {
-        position: absolute; width: 706px; height: 438px; left: 1310px; top: 360px;
-        background: url("assets/image 37.png"); background-blend-mode: screen;
-        border-radius: 30px; transform: rotate(90deg); background-size: cover;
+        position: absolute; 
+        width: 36.77%; 
+        height: 18.61%; 
+        left: 68.23%; 
+        top: 15.3%;
+        background-blend-mode: screen;
+        border-radius: 30px; 
+        transform: rotate(90deg); 
+        background-size: cover;
       }
+      
       .slide-7 .cmf-title {
-        position: absolute; width: 604px; height: 194px; left: 182px; top: 1258px;
-        font-size: 48px; line-height: 59px; color: #9c9797; font-weight: 700;
+        position: absolute; 
+        width: 31.46%; 
+        left: 9.48%; 
+        top: 53.46%;
+        font-size: clamp(1.5rem, 2.5vw, 48px); 
+        line-height: 1.23; 
+        color: #9c9797; 
+        font-weight: 700;
       }
-      .slide-7 .mat-img-1 {
-        position: absolute; width: 395px; height: 395px; left: 174px; top: 1390px;
-        background: url("assets/image 32.png"); background-size: cover;
-      }
-      .slide-7 .mat-img-2 {
-        position: absolute; width: 395px; height: 395px; left: 558px; top: 1390px;
-        background: url("assets/image 33 (1).png"); background-size: cover;
-      }
-      .slide-7 .mat-img-3 {
-        position: absolute; width: 395px; height: 395px; left: 953px; top: 1390px;
-        background: url("assets/image 34.png"); background-size: cover;
-      }
+      
+      .slide-7 .mat-img-1,
+      .slide-7 .mat-img-2,
+      .slide-7 .mat-img-3,
       .slide-7 .mat-img-4 {
-        position: absolute; width: 395px; height: 395px; left: 1350px; top: 1390px;
-        background: url("assets/image 38.png"); background-size: cover;
+        position: absolute; 
+        width: 20.57%; 
+        height: 16.79%; 
+        top: 59.07%;
+        background-size: cover;
       }
-      .slide-7 .mat-text-1 {
-        position: absolute; width: 185px; height: 87px; left: 266px; top: 1785px;
-        font-size: 24px; line-height: 29px; color: #b6c8dd; font-weight: 700;
-      }
-      .slide-7 .mat-text-2 {
-        position: absolute; width: 185px; height: 87px; left: 671px; top: 1785px;
-        font-size: 24px; line-height: 29px; color: #b6c8dd; font-weight: 700;
-      }
-      .slide-7 .mat-text-3 {
-        position: absolute; width: 185px; height: 87px; left: 1066px; top: 1785px;
-        font-size: 24px; line-height: 29px; color: #b6c8dd; font-weight: 700;
-      }
+      
+      .slide-7 .mat-img-1 { left: 9.06%; }
+      .slide-7 .mat-img-2 { left: 29.06%; }
+      .slide-7 .mat-img-3 { left: 49.64%; }
+      .slide-7 .mat-img-4 { left: 70.31%; }
+      
+      .slide-7 .mat-text-1,
+      .slide-7 .mat-text-2,
+      .slide-7 .mat-text-3,
       .slide-7 .mat-text-4 {
-        position: absolute; width: 185px; height: 58px; left: 1463px; top: 1785px;
-        font-size: 24px; line-height: 29px; color: #b6c8dd; font-weight: 700;
+        position: absolute; 
+        width: 9.64%; 
+        top: 75.86%;
+        font-size: clamp(0.9rem, 1.25vw, 24px); 
+        line-height: 1.21; 
+        color: #b6c8dd; 
+        font-weight: 700;
       }
+      
+      .slide-7 .mat-text-1 { left: 13.85%; }
+      .slide-7 .mat-text-2 { left: 34.95%; }
+      .slide-7 .mat-text-3 { left: 55.52%; }
+      .slide-7 .mat-text-4 { left: 76.2%; }
 
       /* --- SLIDE 5: WORKFLOW --- */
-      .slide-5 { height: 3807px; background: #000000; }
-      
-      .slide-5 .hero-image {
-        position: absolute; width: 1571px; height: 1923px; left: 0px; top: 0px;
-        background: url("assets/image 28.png"); background-size: cover;
+      .slide-5 { 
+        min-height: 100vh;
+        height: 3807px; 
+        background: #000000;
+        position: relative;
       }
       
-      .slide-5 .grad-1, .slide-5 .grad-2, .slide-5 .grad-3 {
-        position: absolute; width: 1923px; height: 1353px; left: 567px; top: 0px;
+      .slide-5 .hero-image {
+        position: absolute; 
+        width: 81.82%; 
+        height: 50.51%; 
+        left: 0; 
+        top: 0;
+        background-size: cover;
+      }
+      
+      .slide-5 .grad-1, 
+      .slide-5 .grad-2, 
+      .slide-5 .grad-3 {
+        position: absolute; 
+        width: 100.16%; 
+        height: 35.54%; 
+        left: 29.53%; 
+        top: 0;
         background: linear-gradient(180.1deg, rgba(0, 0, 0, 0) 8.36%, #000000 99.91%);
         transform: rotate(-90deg);
       }
 
       .slide-5 .workflow-title {
-        position: absolute; width: 428px; height: 78px; left: 1073px; 
-        top: 934px; 
-        font-size: 32px; line-height: 39px; color: #B6C8DD; font-weight: 700;
+        position: absolute; 
+        width: 22.29%; 
+        left: 55.89%; 
+        top: 24.53%;
+        font-size: clamp(1.2rem, 1.67vw, 32px); 
+        line-height: 1.22; 
+        color: #B6C8DD; 
+        font-weight: 700;
       }
+      
       .slide-5 .workflow-text {
-        position: absolute; width: 551px; height: 145px; left: 1073px; 
-        top: 1020px; 
-        font-size: 24px; line-height: 29px; color: #B6C8DD; font-weight: 400;
+        position: absolute; 
+        width: 28.7%; 
+        left: 55.89%; 
+        top: 26.79%;
+        font-size: clamp(0.9rem, 1.25vw, 24px); 
+        line-height: 1.21; 
+        color: #B6C8DD; 
+        font-weight: 400;
       }
 
       .slide-5 .tape-img {
-        position: absolute; width: 946px; height: 1562px; left: 165px; top: 2019px;
-        background: url("assets/image 31.png"); background-size: cover; border-radius: 30px;
+        position: absolute; 
+        width: 49.27%; 
+        height: 41.03%; 
+        left: 8.59%; 
+        top: 53.03%;
+        background-size: cover; 
+        border-radius: 30px;
       }
+      
       .slide-5 .tape-title {
-        position: absolute; width: 1419px; height: 39px; left: 1211px; top: 2841px;
-        font-size: 32px; line-height: 39px; color: #b6c8dd; font-weight: 700;
+        position: absolute; 
+        width: 73.91%; 
+        left: 63.07%; 
+        top: 74.64%;
+        font-size: clamp(1.2rem, 1.67vw, 32px); 
+        line-height: 1.22; 
+        color: #b6c8dd; 
+        font-weight: 700;
       }
+      
       .slide-5 .tape-text {
-        position: absolute; width: 481px; height: 87px; left: 1210px; top: 2901px;
-        font-size: 24px; line-height: 140%; color: #b6c8dd; font-weight: 400; opacity: 0.8;
+        position: absolute; 
+        width: 25.05%; 
+        left: 63.02%; 
+        top: 76.21%;
+        font-size: clamp(0.9rem, 1.25vw, 24px); 
+        line-height: 140%; 
+        color: #b6c8dd; 
+        font-weight: 400; 
+        opacity: 0.8;
       }
 
       /* --- SLIDE 3: MECHANISMS --- */
-      .slide-3 { height: 4186px; background: #000000; }
+      .slide-3 { 
+        min-height: 100vh;
+        height: 4186px; 
+        background: #000000;
+        position: relative;
+      }
+      
       .slide-3 .exploded-img {
-        position: absolute; width: 1560px; height: 877px; left: 128px; top: 251px;
-        background: url("assets/0000.png0073 1.png"); background-size: contain; background-repeat: no-repeat;
+        position: absolute; 
+        width: 81.25%; 
+        height: 20.95%; 
+        left: 6.67%; 
+        top: 6%;
+        background-size: contain; 
+        background-repeat: no-repeat;
       }
+      
       .slide-3 .exploded-title {
-        position: absolute; width: 604px; height: 194px; left: 173px; top: 295px;
-        font-size: 36px; line-height: 44px; text-align: center; color: #9c9797; font-weight: 700;
+        position: absolute; 
+        width: 31.46%; 
+        left: 9.01%; 
+        top: 7.05%;
+        font-size: clamp(1.2rem, 1.88vw, 36px); 
+        line-height: 1.22; 
+        text-align: center; 
+        color: #9c9797; 
+        font-weight: 700;
       }
+      
       .slide-3 .mech-group-1 {
-        position: absolute; left: 122px; top: 1433px; width: 1675px; height: 1171px; pointer-events: none;
+        position: absolute; 
+        left: 6.35%; 
+        top: 34.23%; 
+        width: 87.24%; 
+        height: 27.98%; 
+        pointer-events: none;
       }
+      
       .slide-3 .img-clip-main {
-        position: absolute; width: 1619px; height: 1118px; left: 32px; top: 26px;
-        background: url("assets/0000.png0058 1.png"); background-size: contain; background-repeat: no-repeat;
+        position: absolute; 
+        width: 96.66%; 
+        height: 95.47%; 
+        left: 1.91%; 
+        top: 2.22%;
+        background-size: contain; 
+        background-repeat: no-repeat;
       }
+      
       .slide-3 .clip-title {
-        position: absolute; width: 1419px; height: 39px; left: 133px; top: 482px;
-        font-size: 32px; line-height: 39px; color: #B6C8DD; font-weight: 700;
+        position: absolute; 
+        width: 84.69%; 
+        left: 7.94%; 
+        top: 41.16%;
+        font-size: clamp(1.2rem, 1.67vw, 32px); 
+        line-height: 1.22; 
+        color: #B6C8DD; 
+        font-weight: 700;
       }
+      
       .slide-3 .clip-text {
-        position: absolute; width: 512px; height: 116px; left: 132px; top: 542px;
-        font-size: 24px; line-height: 29px; color: #B6C8DD; font-weight: 400;
+        position: absolute; 
+        width: 30.57%; 
+        left: 7.88%; 
+        top: 46.28%;
+        font-size: clamp(0.9rem, 1.25vw, 24px); 
+        line-height: 1.21; 
+        color: #B6C8DD; 
+        font-weight: 400;
       }
+      
       .slide-3 .mech-group-2 {
-        position: absolute; left: 337px; top: 2844px; width: 1245px; height: 951px; pointer-events: none;
+        position: absolute; 
+        left: 17.55%; 
+        top: 67.94%; 
+        width: 64.84%; 
+        height: 22.72%; 
+        pointer-events: none;
       }
+      
       .slide-3 .img-safe-1 {
-        position: absolute; width: 809px; height: 455px; left: 18px; top: 13px;
-        background: url("assets/0000.png0091 1.png"); background-size: contain; background-repeat: no-repeat;
+        position: absolute; 
+        width: 64.98%; 
+        height: 47.85%; 
+        left: 1.45%; 
+        top: 1.37%;
+        background-size: contain; 
+        background-repeat: no-repeat;
       }
+      
       .slide-3 .img-safe-2 {
-        position: absolute; width: 809px; height: 443px; left: 18px; top: 496px;
-        background: url("assets/0000.png0015 1.png"); background-size: contain; background-repeat: no-repeat;
+        position: absolute; 
+        width: 64.98%; 
+        height: 46.58%; 
+        left: 1.45%; 
+        top: 52.16%;
+        background-size: contain; 
+        background-repeat: no-repeat;
       }
+      
       .slide-3 .safety-title {
-        position: absolute; width: 1419px; height: 39px; left: 632px; top: 402px;
-        font-size: 32px; line-height: 39px; color: #B6C8DD; font-weight: 700;
+        position: absolute; 
+        width: 113.98%; 
+        left: 50.76%; 
+        top: 42.27%;
+        font-size: clamp(1.2rem, 1.67vw, 32px); 
+        line-height: 1.22; 
+        color: #B6C8DD; 
+        font-weight: 700;
       }
+      
       .slide-3 .safety-text {
-        position: absolute; width: 512px; height: 145px; left: 631px; top: 462px;
-        font-size: 24px; line-height: 29px; color: #B6C8DD; font-weight: 400;
+        position: absolute; 
+        width: 41.13%; 
+        left: 50.68%; 
+        top: 48.58%;
+        font-size: clamp(0.9rem, 1.25vw, 24px); 
+        line-height: 1.21; 
+        color: #B6C8DD; 
+        font-weight: 400;
       }
 
       /* --- SLIDE 4: STORAGE --- */
-      .slide-4 { height: 4026px; background: #000000; }
+      .slide-4 { 
+        min-height: 100vh;
+        height: 4026px; 
+        background: #000000;
+        position: relative;
+      }
       
-      .slide-4 .img-10 { /* Background placeholder */
-        position: absolute; width: 1920px; height: 1080px; left: 0px; top: 36px;
+      .slide-4 .img-10 {
+        position: absolute; 
+        width: 100%; 
+        height: 26.82%; 
+        left: 0; 
+        top: 0.89%;
       }
 
-      /* Frame 13: Extra Storage Group */
       .slide-4 .frame-13 {
-        position: absolute; width: 696px; height: 413px; left: 919px; top: 829px;
+        position: absolute; 
+        width: 36.25%; 
+        height: 10.26%; 
+        left: 47.86%; 
+        top: 20.59%;
       }
+      
       .slide-4 .storage-title {
-        position: absolute; width: 305px; height: 39px; left: 65px; bottom: 240px;
-        font-size: 32px; line-height: 39px; color: #B6C8DD; font-weight: 700;
+        position: absolute; 
+        width: 43.82%; 
+        left: 9.34%; 
+        bottom: 58.11%;
+        font-size: clamp(1.2rem, 1.67vw, 32px); 
+        line-height: 1.22; 
+        color: #B6C8DD; 
+        font-weight: 700;
       }
+      
       .slide-4 .storage-text {
-        position: absolute; width: 565px; height: 58px; left: 65px; bottom: 169px;
-        font-size: 24px; line-height: 29px; color: #B6C8DD; font-weight: 400;
+        position: absolute; 
+        width: 81.18%; 
+        left: 9.34%; 
+        bottom: 40.92%;
+        font-size: clamp(0.9rem, 1.25vw, 24px); 
+        line-height: 1.21; 
+        color: #B6C8DD; 
+        font-weight: 400;
       }
 
-      /* Frame 14: Packaging Design Group */
       .slide-4 .frame-14 {
-        position: absolute; width: 1491px; height: 737px; left: 338px; top: 1659px;
+        position: absolute; 
+        width: 77.66%; 
+        height: 18.31%; 
+        left: 17.6%; 
+        top: 41.2%;
         border-radius: 30px;
       }
+      
       .slide-4 .img-27 {
-        position: absolute; width: 1311px; height: 737px; left: 303px; top: 0px;
-        background: url("assets/image 27.png"); background-size: cover;
+        position: absolute; 
+        width: 87.93%; 
+        height: 100%; 
+        left: 20.32%; 
+        top: 0;
+        background-size: cover;
       }
-      .slide-4 .gradient-rect { /* Rectangle 2 */
-        position: absolute; width: 737px; height: 667px; left: 0px; top: 0px;
+      
+      .slide-4 .gradient-rect {
+        position: absolute; 
+        width: 49.43%; 
+        height: 90.5%; 
+        left: 0; 
+        top: 0;
         background: linear-gradient(180.1deg, rgba(0, 0, 0, 0) 8.36%, rgba(0, 0, 0, 0.53) 20.69%, rgba(0, 0, 0, 0.82) 41.37%, rgba(0, 0, 0, 0.89) 65.14%, #000000 99.91%);
         transform: rotate(90deg);
         z-index: 1;
       }
+      
       .slide-4 .pkg-title {
-        position: absolute; width: 1419px; height: 39px; left: 72px; top: 348px;
-        font-size: 32px; line-height: 39px; color: #B6C8DD; font-weight: 700; z-index: 2;
+        position: absolute; 
+        width: 95.17%; 
+        left: 4.83%; 
+        top: 47.22%;
+        font-size: clamp(1.2rem, 1.67vw, 32px); 
+        line-height: 1.22; 
+        color: #B6C8DD; 
+        font-weight: 700; 
+        z-index: 2;
       }
+      
       .slide-4 .pkg-text {
-        position: absolute; width: 565px; height: 87px; left: 71px; top: 408px;
-        font-size: 24px; line-height: 29px; color: #B6C8DD; font-weight: 400; z-index: 2;
+        position: absolute; 
+        width: 37.9%; 
+        left: 4.76%; 
+        top: 55.36%;
+        font-size: clamp(0.9rem, 1.25vw, 24px); 
+        line-height: 1.21; 
+        color: #B6C8DD; 
+        font-weight: 400; 
+        z-index: 2;
       }
 
-      /* Images */
       .slide-4 .img-30 {
-        position: absolute; width: 587px; height: 892px; left: 170px; top: 497px;
-        background: url("assets/image 30.png"); border-radius: 30px; background-size: cover;
+        position: absolute; 
+        width: 30.57%; 
+        height: 22.15%; 
+        left: 8.85%; 
+        top: 12.34%;
+        border-radius: 30px; 
+        background-size: cover;
       }
+      
       .slide-4 .img-32 {
-        position: absolute; width: 824px; height: 526px; left: 855px; top: 181px;
-        background: url("assets/image 32 (1).png"); border-radius: 30px; background-size: cover;
+        position: absolute; 
+        width: 42.92%; 
+        height: 13.07%; 
+        left: 44.53%; 
+        top: 4.49%;
+        border-radius: 30px; 
+        background-size: cover;
       }
+      
       .slide-4 .img-34 {
-        position: absolute; width: 1587px; height: 1128px; left: 180px; top: 2549px;
-        background: url("assets/image 34 (1).png"); background-size: cover;
+        position: absolute; 
+        width: 82.66%; 
+        height: 28.01%; 
+        left: 9.38%; 
+        top: 63.31%;
+        background-size: cover;
       }
 
       /* --- SLIDE 6 --- */
-      .slide-6 { height: 1080px; background: #000000; }
+      .slide-6 { 
+        min-height: 100vh;
+        height: 1080px; 
+        background: #000000;
+        position: relative;
+      }
+      
       .slide-6 .bg-graphic {
-        position: absolute; width: 1920px; height: 1099px; left: 0px; top: 1px;
-        background: url("assets/image 29.png"); background-size: cover;
+        position: absolute; 
+        width: 100%; 
+        height: 101.76%; 
+        left: 0; 
+        top: 0.09%;
+        background-size: cover;
         z-index: 1; 
       }
       
-      /* Thank You Text (Split) */
       .slide-6 .thank-left {
-        position: absolute; width: 200px; height: 50px; left: 600px; top: 416px;
-        font-size: 36px; line-height: 44px; text-align: right; color: #9c9797; font-weight: 700;
+        position: absolute; 
+        width: 10.42%; 
+        left: 31.25%; 
+        top: 38.52%;
+        font-size: clamp(1.2rem, 1.88vw, 36px); 
+        line-height: 1.22; 
+        text-align: right; 
+        color: #9c9797; 
+        font-weight: 700;
         z-index: 2;
       }
+      
       .slide-6 .you-right {
-        position: absolute; width: 200px; height: 50px; left: 1160px; top: 416px;
-        font-size: 36px; line-height: 44px; text-align: left; color: #9c9797; font-weight: 700;
+        position: absolute; 
+        width: 10.42%; 
+        left: 60.42%; 
+        top: 38.52%;
+        font-size: clamp(1.2rem, 1.88vw, 36px); 
+        line-height: 1.22; 
+        text-align: left; 
+        color: #9c9797; 
+        font-weight: 700;
         z-index: 2;
+      }
+
+      /* --- Mobile Optimizations --- */
+      @media (max-width: 768px) {
+        .slide-1, .slide-2, .slide-3, .slide-4, .slide-5, .slide-6, .slide-7 {
+          height: auto;
+          min-height: 100vh;
+          padding: 2rem 1rem;
+        }
+
+        .scalable-frame {
+          transform: none !important;
+          width: 100% !important;
+        }
+
+        .slide-container {
+          height: auto !important;
+        }
+
+        [class*="img-"], [class*="bg-graphic"] {
+          position: relative !important;
+          width: 100% !important;
+          height: auto !important;
+          left: 0 !important;
+          top: 0 !important;
+          margin: 1rem 0;
+        }
+      }
+
+      /* --- Performance Optimizations --- */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+
+      /* Optimize paint performance */
+      .slide-container,
+      .scalable-frame {
+        contain: layout style paint;
+      }
+
+      /* Use content-visibility for off-screen content */
+      .slide-container:not(:first-child) {
+        content-visibility: auto;
+        contain-intrinsic-size: auto 1080px;
       }
     </style>
   </head>
   <body>
+    <!-- Loading indicator -->
+    <div id="loading-indicator" style="position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, #0066cc, #00ccff); z-index: 9999; transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease;"></div>
+
     <div class="slide-container">
       <div class="scalable-frame slide-1">
-        <div class="bg-graphic reveal-element delay-100"></div>
+        <div class="bg-graphic lazy-bg reveal-element delay-100" data-bg="url('assets/0000.png0085 1.png')"></div>
         <div class="prod-design vw-head reveal-element delay-300">Simple Product Design</div>
         <div class="team-vw vw-head reveal-element delay-500">Team Volkswagen</div>
         <div class="dev vw-head reveal-element delay-600">Development</div>
         <div class="elias vw-head reveal-element delay-600">Elias Abraham</div>
-        <div class="logo reveal-element delay-200"></div>
+        <div class="logo lazy-bg reveal-element delay-200" data-bg="url('assets/image 6.png')"></div>
       </div>
     </div>
 
     <div class="slide-container">
       <div class="scalable-frame slide-2">
-        <div class="img-12 reveal-element"></div>
+        <div class="img-12 lazy-bg reveal-element" data-bg="url('assets/image 12.png')"></div>
         <div class="img-10 reveal-element delay-100"></div>
         <div class="introducing vw-head reveal-element delay-300">Introducing</div>
-        <div class="img-11 reveal-element delay-200"></div>
+        <div class="img-11 lazy-bg reveal-element delay-200" data-bg="url('assets/image 11.png')"></div>
         <div class="klebo-title vw-head reveal-element delay-400">Klebo</div>
         <div class="next-gear vw-head reveal-element delay-500">Next Gear, at your desk.</div>
         <div class="digital-renders-title vw-head reveal-element">Digital Renders</div>
-        <div class="img-13 reveal-element delay-100"></div>
-        <div class="img-40 reveal-element delay-200"></div>
-        <div class="img-33 reveal-element delay-300"></div>
+        <div class="img-13 lazy-bg reveal-element delay-100" data-bg="url('assets/image 13.png')"></div>
+        <div class="img-40 lazy-bg reveal-element delay-200" data-bg="url('assets/image 40.png')"></div>
+        <div class="img-33 lazy-bg reveal-element delay-300" data-bg="url('assets/image 33.png')"></div>
       </div>
     </div>
 
     <div class="slide-container">
       <div class="scalable-frame slide-7">
-        <div class="bg-graphic-wide reveal-element"></div>
+        <div class="bg-graphic-wide lazy-bg reveal-element"></div>
         <div class="img-10 reveal-element"></div>
         <div class="proto-title vw-head reveal-element">Prototype</div>
         <div class="proto-subtitle vw-head reveal-element delay-100">Soft Model</div>
-        <div class="img-proto-1 reveal-element delay-200"></div>
-        <div class="img-proto-2 reveal-element delay-300"></div>
-        <div class="img-proto-3 reveal-element delay-400"></div>
+        <div class="img-proto-1 lazy-bg reveal-element delay-200" data-bg="url('assets/image 35.png')"></div>
+        <div class="img-proto-2 lazy-bg reveal-element delay-300" data-bg="url('assets/image 36.png')"></div>
+        <div class="img-proto-3 lazy-bg reveal-element delay-400" data-bg="url('assets/image 37.png')"></div>
         <div class="cmf-title vw-head reveal-element delay-200">CMF Application</div>
-        <div class="mat-img-1 reveal-element delay-300"></div>
-        <div class="mat-img-2 reveal-element delay-300"></div>
-        <div class="mat-img-3 reveal-element delay-400"></div>
-        <div class="mat-img-4 reveal-element delay-400"></div>
+        <div class="mat-img-1 lazy-bg reveal-element delay-300" data-bg="url('assets/image 32.png')"></div>
+        <div class="mat-img-2 lazy-bg reveal-element delay-300" data-bg="url('assets/image 33 (1).png')"></div>
+        <div class="mat-img-3 lazy-bg reveal-element delay-400" data-bg="url('assets/image 34.png')"></div>
+        <div class="mat-img-4 lazy-bg reveal-element delay-400" data-bg="url('assets/image 38.png')"></div>
         <div class="mat-text-1 vw-text reveal-element delay-400">Moonstone Gray High-Density ABS Polymer</div>
         <div class="mat-text-2 vw-text reveal-element delay-400">Dark Charcoal Thermoplastic Elastomer (TPE)</div>
         <div class="mat-text-3 vw-text reveal-element delay-500">Technical Blue Anodized Aluminum</div>
@@ -437,7 +953,7 @@
 
     <div class="slide-container">
       <div class="scalable-frame slide-5">
-        <div class="hero-image reveal-element"></div>
+        <div class="hero-image lazy-bg reveal-element" data-bg="url('assets/image 28.png')"></div>
         <div class="grad-1"></div>
         <div class="grad-2"></div>
         <div class="grad-3"></div>
@@ -445,7 +961,7 @@
         <div class="workflow-text vw-text reveal-element delay-200">
             Klebo seamlessly blends into the table by clamping to the edge to liberate valuable workspace, functioning as a stable, integrated extension of the desk that allows for fluid, one-handed access without interrupting your workflow.
         </div>
-        <div class="tape-img reveal-element delay-200"></div>
+        <div class="tape-img lazy-bg reveal-element delay-200" data-bg="url('assets/image 31.png')"></div>
         <div class="tape-title vw-head reveal-element delay-300">Easy Tape Removal</div>
         <div class="tape-text vw-text reveal-element delay-400">
           Klebo simplifies refills with a quick-release spool hub that slides out smoothly, allowing for effortless tape changes in seconds.
@@ -455,18 +971,18 @@
 
     <div class="slide-container">
       <div class="scalable-frame slide-3">
-        <div class="exploded-img reveal-element"></div>
+        <div class="exploded-img lazy-bg reveal-element" data-bg="url('assets/0000.png0073 1.png')"></div>
         <div class="exploded-title vw-head reveal-element delay-100">Exploded View</div>
         <div class="mech-group-1">
-            <div class="img-clip-main reveal-element delay-200"></div>
+            <div class="img-clip-main lazy-bg reveal-element delay-200" data-bg="url('assets/0000.png0058 1.png')"></div>
             <div class="clip-title vw-head reveal-element delay-300">Clip-on Mechanism</div>
             <div class="clip-text vw-text reveal-element delay-400">
                 Featuring an under-chassis clamping mechanism and rubber grips, Klebo anchors to the desk edge to ensure stability and seamless tape access during workflow.
             </div>
         </div>
         <div class="mech-group-2">
-            <div class="img-safe-1 reveal-element delay-200"></div>
-            <div class="img-safe-2 reveal-element delay-300"></div>
+            <div class="img-safe-1 lazy-bg reveal-element delay-200" data-bg="url('assets/0000.png0091 1.png')"></div>
+            <div class="img-safe-2 lazy-bg reveal-element delay-300" data-bg="url('assets/0000.png0015 1.png')"></div>
             <div class="safety-title vw-head reveal-element delay-300">Safety Mechanism</div>
             <div class="safety-text vw-text reveal-element delay-400">
                 Klebo features a retractable blade mechanism that keeps the cutting edge shielded behind the ribbed TPE guard when idle, only exposing it under specific cutting tension to prevent accidental injury.
@@ -479,8 +995,8 @@
       <div class="scalable-frame slide-4">
         <div class="img-10 reveal-element"></div>
         
-        <div class="img-32 reveal-element delay-100"></div>
-        <div class="img-30 reveal-element delay-200"></div>
+        <div class="img-32 lazy-bg reveal-element delay-100" data-bg="url('assets/image 32 (1).png')"></div>
+        <div class="img-30 lazy-bg reveal-element delay-200" data-bg="url('assets/image 30.png')"></div>
 
         <div class="frame-13 reveal-element delay-300">
             <div class="storage-title vw-head">Extra Storage</div>
@@ -490,7 +1006,7 @@
         </div>
 
         <div class="frame-14 reveal-element delay-400">
-            <div class="img-27"></div>
+            <div class="img-27 lazy-bg" data-bg="url('assets/image 27.png')"></div>
             <div class="gradient-rect"></div>
             <div class="pkg-title vw-head">Packaging Design Concept</div>
             <div class="pkg-text vw-text">
@@ -498,48 +1014,141 @@
             </div>
         </div>
 
-        <div class="img-34 reveal-element delay-500"></div>
+        <div class="img-34 lazy-bg reveal-element delay-500" data-bg="url('assets/image 34 (1).png')"></div>
       </div>
     </div>
 
     <div class="slide-container">
       <div class="scalable-frame slide-6">
-        <div class="bg-graphic reveal-element"></div>
+        <div class="bg-graphic lazy-bg reveal-element" data-bg="url('assets/image 29.png')"></div>
         <div class="thank-left vw-head reveal-element delay-300">Thank</div>
         <div class="you-right vw-head reveal-element delay-400">You</div>
       </div>
     </div>
 
     <script>
+      // Optimized Resize Handler with Debouncing
+      let resizeTimer;
       function handleResize() {
-        const frames = document.querySelectorAll(".scalable-frame");
-        const windowWidth = window.innerWidth;
-        const baseWidth = 1920;
-        const scale = Math.min(1, windowWidth / baseWidth);
-        frames.forEach((frame) => {
-          frame.style.transform = `scale(${scale})`;
-          const originalHeight = parseInt(window.getComputedStyle(frame).height);
-          frame.parentElement.style.height = `${originalHeight * scale}px`;
-        });
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          const frames = document.querySelectorAll(".scalable-frame");
+          const windowWidth = window.innerWidth;
+          const baseWidth = 1920;
+          
+          // Don't scale on mobile
+          if (windowWidth <= 768) {
+            frames.forEach((frame) => {
+              frame.style.transform = 'none';
+              frame.parentElement.style.height = 'auto';
+            });
+            return;
+          }
+          
+          const scale = Math.min(1, windowWidth / baseWidth);
+          
+          frames.forEach((frame) => {
+            frame.style.transform = `scale(${scale})`;
+            const originalHeight = parseInt(window.getComputedStyle(frame).height);
+            frame.parentElement.style.height = `${originalHeight * scale}px`;
+          });
+        }, 100);
       }
-      window.addEventListener("resize", handleResize);
-      window.addEventListener("load", handleResize);
 
-      const observer = new IntersectionObserver(
+      // Lazy Loading for Background Images
+      const lazyLoadBg = () => {
+        const lazyBgs = document.querySelectorAll('.lazy-bg:not(.loaded)');
+        
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const element = entry.target;
+              const bgUrl = element.getAttribute('data-bg');
+              
+              if (bgUrl) {
+                // Preload image
+                const img = new Image();
+                img.onload = () => {
+                  element.style.backgroundImage = bgUrl;
+                  element.classList.add('loaded');
+                };
+                img.src = bgUrl.replace(/url\(['"]?(.+?)['"]?\)/, '$1');
+              }
+              
+              observer.unobserve(element);
+            }
+          });
+        }, {
+          rootMargin: '50px',
+          threshold: 0.01
+        });
+
+        lazyBgs.forEach(bg => imageObserver.observe(bg));
+      };
+
+      // Reveal Animation Observer
+      const revealObserver = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting) entry.target.classList.add("active");
+            if (entry.isIntersecting) {
+              entry.target.classList.add("active");
+            }
           });
         },
         { rootMargin: "-50px", threshold: 0.15 }
       );
 
-      document.querySelectorAll(".reveal-element").forEach((el) => observer.observe(el));
-
+      // Initialize
       window.addEventListener("load", () => {
+        // Hide loading indicator
+        const loadingIndicator = document.getElementById('loading-indicator');
+        if (loadingIndicator) {
+          loadingIndicator.style.transform = 'scaleX(1)';
+          setTimeout(() => {
+            loadingIndicator.style.opacity = '0';
+            setTimeout(() => loadingIndicator.remove(), 300);
+          }, 500);
+        }
+
         handleResize();
-        document.querySelectorAll(".slide-1 .reveal-element").forEach((el) => el.classList.add("active"));
+        lazyLoadBg();
+        
+        // Activate first slide immediately
+        document.querySelectorAll(".slide-1 .reveal-element").forEach((el) => {
+          el.classList.add("active");
+        });
+
+        // Observe all reveal elements
+        document.querySelectorAll(".reveal-element").forEach((el) => {
+          revealObserver.observe(el);
+        });
       });
+
+      // Optimized Resize Event
+      let rafId;
+      window.addEventListener("resize", () => {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(handleResize);
+      });
+
+      // Prefetch next section images on scroll
+      let lastScrollTop = 0;
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > lastScrollTop) {
+          lazyLoadBg();
+        }
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+      }, { passive: true });
+
+      // Service Worker for caching (optional)
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {
+            // Service worker registration failed, silently continue
+          });
+        });
+      }
     </script>
   </body>
 </html>
